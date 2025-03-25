@@ -262,7 +262,9 @@ int main() {
 
     auto scores = eval_scores(possible_words);
     auto list_scores = list_words_by_score(scores);
-    std::cout << "\n\n" << list_scores.back().second << "\n\n";
+    for (const auto &[score, word] : list_scores) {
+      std::cout << score << " " << word << '\n';
+    }
   }
   return 0;
 }
