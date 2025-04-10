@@ -35,7 +35,6 @@ target_sources(
         wordle_solver
         PRIVATE
         src/main.cpp
-        src/entropy.cpp
 )
 target_include_directories(
         wordle_solver
