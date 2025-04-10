@@ -1,4 +1,4 @@
-#include "dictionary.h"
+#include "small_wl.h"
 
 #include <algorithm>
 #include <iostream>
@@ -16,7 +16,7 @@ list_words_by_score(const std::map<std::string, int> &scores);
 
 int main() {
   // fill letter frequency map -------------------------------------------------
-  for (const auto &word : wordlist) {
+  for (const auto &word : small_word_list) {
     for (const auto letter : word) {
       lettermap[letter]++;
     }
@@ -28,7 +28,7 @@ int main() {
 #endif
 
   // make commonality/uniqueness score map--------------------------------------
-  std::map<std::string, int> cu_scores = eval_scores(wordlist);
+  std::map<std::string, int> cu_scores = eval_scores(small_word_list);
 
 #ifdef LOG_Y
   for (const auto &[word, score] : cu_scores) {
@@ -57,7 +57,7 @@ int main() {
   std::vector<char> letters_dont_go_here(5, '0');
   std::vector<int> neg_positions{};
   std::vector<std::string> possible_words{};
-  possible_words.reserve(wordlist.size());
+  possible_words.reserve(small_word_list.size());
 
   // begin feedback loop -------------------------------------------------------
   for (int i = 0; i < 5; ++i) {
@@ -167,7 +167,7 @@ int main() {
 
     // exclude letters
     if (i == 0) {
-      for (const auto &word : wordlist) {
+      for (const auto &word : small_word_list) {
         bool found{false};
         for (const auto letter : exclude_letters) {
           if (word.find(letter) != std::string::npos) {
@@ -265,6 +265,9 @@ int main() {
     for (const auto &[score, word] : list_scores) {
       std::cout << score << " " << word << '\n';
     }
+
+    std::cout << double(possible_words.size()) / double(small_word_list.size())
+              << '\n';
   }
   return 0;
 }
