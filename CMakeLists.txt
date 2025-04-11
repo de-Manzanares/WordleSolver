@@ -47,22 +47,3 @@ target_link_libraries(
         PRIVATE
         common-options
 )
-
-add_executable(frequency_by_position)
-target_sources(
-        frequency_by_position
-        PRIVATE
-        src/frequency_by_position.cpp
-)
-target_include_directories(
-        frequency_by_position
-        PRIVATE
-        include
-)
-target_link_libraries(
-        frequency_by_position
-        PRIVATE
-        common-options
-)
-
-add_subdirectory(test)
