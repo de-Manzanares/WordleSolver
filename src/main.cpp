@@ -1,4 +1,4 @@
-#include "solver.hpp"
+#include "wordle_solver.hpp"
 
 int main() {
   WordleSolver ws;

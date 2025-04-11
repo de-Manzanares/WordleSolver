@@ -21,6 +21,7 @@ target_compile_options(
         $<$<CONFIG:Debug>:$<$<CXX_COMPILER_ID:GNU,Clang>:${DEBUGCompilerOptions}>>
         $<$<CONFIG:Coverage>:$<$<CXX_COMPILER_ID:GNU,Clang>:${COVCompilerOptions}>>
         $<$<CONFIG:Sanitizer>:$<$<CXX_COMPILER_ID:GNU,Clang>:${SANCompilerOptions}>>
+        $<$<CONFIG:Release>:$<$<CXX_COMPILER_ID:GNU,Clang>:-O3>>
         $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 target_link_options(
@@ -35,7 +36,7 @@ target_sources(
         wordle_solver
         PRIVATE
         src/main.cpp
-        src/solver.cpp
+        src/wordle_solver.cpp
 )
 target_include_directories(
         wordle_solver

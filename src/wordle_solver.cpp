@@ -1,12 +1,17 @@
-#include "solver.hpp"
+#include "entropy.hpp"
+#include "wordle_solver.hpp"
+
+#include <algorithm>
+#include <bitset>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <unordered_map>
 
-std::vector<std::string> WordleSolver::load_wl(const std::string &file) {
+std::vector<std::string>
+WordleSolver::load_wl(const std::string_view file_name) {
   std::vector<std::string> wl;
-  std::ifstream iFile(file);
+  std::ifstream iFile((file_name.data()));
   std::string line;
   while (std::getline(iFile, line)) {
     wl.push_back(line);
