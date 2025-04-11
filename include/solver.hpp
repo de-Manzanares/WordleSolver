@@ -9,7 +9,7 @@
 
 class WordleSolver {
  public:
-  std::vector<std::string> load_wl(const std::string &file);
+  static std::vector<std::string> load_wl(const std::string &file);
 
   WordleSolver() {
     letters_go_here = std::vector<char>(5, '0');

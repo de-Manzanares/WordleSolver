@@ -21,8 +21,6 @@ void WordleSolver::feedback_loop() {
   // -------------------------------------------------------
   for (int i = 0; i < 5; ++i) {
 
-    possible_words = all_solutions;
-
     std::stringstream ss{};
     std::string input{};
     std::string substring{};
@@ -106,6 +104,7 @@ void WordleSolver::feedback_loop() {
 
     std::cout << "Letters in known positions: ";
     std::getline(std::cin, input);
+    pos_positions.clear();
     if (!input.empty()) {
       for (auto j = 0; j < 5; ++j) {
         if (input[j] != '0') {
@@ -138,6 +137,7 @@ void WordleSolver::feedback_loop() {
 
     std::cout << "Letters must not be here: ";
     std::getline(std::cin, input);
+    neg_positions.clear();
     if (!input.empty()) {
       for (auto j = 0; j < 5; ++j) {
         if (input[j] != '0') {
