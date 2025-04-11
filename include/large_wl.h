@@ -1,7 +1,10 @@
+#ifndef WORDLE_SOLVER_LARGE_WL_H_
+#define WORDLE_SOLVER_LARGE_WL_H_
+
 #include <string>
 #include <vector>
 
-static const std::vector<std::string> wordlist = {
+inline static const std::vector<std::string> wordlist = {
     "aahed", "aalii", "aapas", "aargh", "aarti", "abaca", "abaci", "abacs",
     "abaft", "abaht", "abaka", "abamp", "aband", "abash", "abask", "abaya",
     "abbas", "abbed", "abbes", "abcee", "abeam", "abear", "abeat", "abeer",
@@ -1859,3 +1862,5 @@ static const std::vector<std::string> wordlist = {
     "shave", "bobby", "eclat", "fella", "gaily", "harry", "hasty", "hydro",
     "liege", "octal", "ombre", "payer", "sooth", "unset", "unlit", "vomit",
     "fanny", "fetus", "butch", "stalk", "flack", "widow", "augur"};
+
+#endif // WORDLE_SOLVER_LARGE_WL_H_

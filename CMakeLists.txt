@@ -35,6 +35,7 @@ target_sources(
         wordle_solver
         PRIVATE
         src/main.cpp
+        src/solver.cpp
 )
 target_include_directories(
         wordle_solver
@@ -63,3 +64,5 @@ target_link_libraries(
         PRIVATE
         common-options
 )
+
+add_subdirectory(test)

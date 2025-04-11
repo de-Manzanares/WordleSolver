@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-static const std::vector<std::string> small_word_list{
+inline static const std::vector<std::string> small_word_list{
     "eight", "dryly", "belle", "album", "polka", "train", "whiff", "anger",
     "sword", "abled", "hotly", "cutie", "whirl", "stone", "eerie", "mucus",
     "ruddy", "wield", "showy", "salvo", "their", "serve", "fleck", "adorn",

@@ -1,12 +1,9 @@
 #ifndef WORDLE_SOLVER_ENTROPY_HPP_
 #define WORDLE_SOLVER_ENTROPY_HPP_
 
-// #include "small_wl.h"
-
 #include <algorithm>
 #include <bitset>
 #include <cmath>
-#include <small_wl.h>
 #include <unordered_map>
 
 /**
@@ -63,8 +60,6 @@ inline double prob_x(const double x, const double y) { return x / y; }
 inline double surprisal(const double prob) { return -std::log2(prob); }
 
 using freq_map = std::unordered_map<std::bitset<10>, double>;
-
-const auto WORDS = static_cast<double>(small_word_list.size());
 
 inline double entropy(const freq_map &feedback) {
   double entropy{};
