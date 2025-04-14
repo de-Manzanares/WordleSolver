@@ -2,6 +2,6 @@
 
 int main() {
   WordleSolver ws;
-  ws.feedback_loop();
+  ws.solve();
   return 0;
 }
