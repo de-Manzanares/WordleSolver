@@ -3,31 +3,35 @@
 #include "feedback.hpp"
 
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
 #include <unordered_map>
 
 std::vector<std::string>
 WordleSolver::load_wl(const std::string_view file_name) {
   std::vector<std::string> wl;
-  std::ifstream iFile((file_name.data()));
-  std::string line;
-  while (std::getline(iFile, line)) {
-    wl.push_back(line);
+  if (!std::filesystem::exists(file_name)) {
+    std::cerr << "Cannot find file '" << file_name << "' in search path:\n"
+              << std::filesystem::current_path();
+    std::exit(EXIT_FAILURE);
   }
+  if (std::ifstream iFile((file_name.data())); iFile.is_open()) {
+    std::string line;
+    while (std::getline(iFile, line)) {
+      wl.push_back(line);
+    }
+  } else {
+    std::cerr << "Failed to open file " << file_name << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
   return wl;
 }
 
-void WordleSolver::solve() {
-  std::cout << _starting_word.second << ' ';
-
-  for (_iteration = 0; _iteration < 4; ++_iteration) {
-    accept_feedback();
-    update_guess_list();
-    std::cout << make_guess() << ' ';
-  }
+void WordleSolver::accept_feedback(const std::string &feedback) {
+  _feedback = feedback;
+  update_guess_list();
 }
-
-void WordleSolver::accept_feedback() { std::getline(std::cin, _feedback); }
 
 void WordleSolver::update_guess_list() {
   // the pruning methods may not remove the last guess if there are duplicate
@@ -93,7 +97,7 @@ void WordleSolver::process_exclude_letters() {
                      }),
       _exclude_letters.end());
 
-  if (_iteration == 0) {
+  if (_iteration == 1) {
     for (const auto &word : _all_solutions) {
       bool found{false};
       for (const auto letter : _exclude_letters) {
@@ -175,12 +179,20 @@ void WordleSolver::process_green_letters() {
   }
 }
 
-std::string WordleSolver::make_guess() {
+std::string WordleSolver::guess() {
   std::string guess;
-
-  if (_guess_list.size() == 1) {
-    guess = _guess_list[0];
+  if (_iteration == 0) {
+    guess = _last_guess;
+  } else if (_guess_list.size() == 1) {
+    _last_guess = _guess_list[0];
+    guess = _last_guess;
   } else {
+    if (_guess_list.empty()) {
+      std::cerr << "No solution: \n"
+                << "\t- Solution is missing from dictionary, or\n"
+                << "\t- Incorrect user input\n";
+      std::exit(EXIT_FAILURE);
+    }
     _entropies.clear();
     _entropies.reserve(_guess_list.size());
 
@@ -204,9 +216,9 @@ std::string WordleSolver::make_guess() {
     }
 
     std::sort(_entropies.begin(), _entropies.end(), std::less{});
-
     _last_guess = _entropies.back().second;
     guess = _last_guess;
   }
+  ++_iteration;
   return guess;
 }

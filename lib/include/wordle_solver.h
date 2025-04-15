@@ -25,9 +25,18 @@ class WordleSolver {
         _letters_dont_go_here{std::vector(5, '0')} {}
 
   /**
-   * @brief Solve the puzzle
+   * @brief   Give the next guess
+   * @return  The guess
    */
-  void solve();
+  std::string guess();
+
+  /**
+   * @brief   Read feedback into _feedback from std::cin
+   * @details 'x' - grey \n
+   *          'y' - yellow \n
+   *          'g' - green
+   */
+  void accept_feedback(const std::string &feedback);
 
   /**
    * @brief   Apparently, huge static variables cause compilation to eat ALL THE
@@ -43,12 +52,8 @@ class WordleSolver {
   /// all possible solutions, loaded from text file
   std::vector<std::string> _all_solutions;
 
-  /// pre-calculated highest-entropy word from _all_words
-  inline static std::pair<double, std::string> _starting_word = {5.94723,
-                                                                 "tarse"};
-
   /// word entropies, ie the expected information
-  std::vector<std::pair<double, std::string>> _entropies;
+  std::vector<std::pair<double, std::string>> _entropies{};
 
   /// used by other methods for refining the next guess
   std::string _last_guess = "tarse";
@@ -69,14 +74,6 @@ class WordleSolver {
 
   /// the words we've narrowed it down to so far
   std::vector<std::string> _guess_list{};
-
-  /**
-   * @brief   Read feedback into _feedback from std::cin
-   * @details 'x' - grey \n
-   *          'y' - yellow \n
-   *          'g' - green
-   */
-  void accept_feedback();
 
   /**
    * @brief   Based on the feedback, update the lists of possible solutions
@@ -101,12 +98,6 @@ class WordleSolver {
   void process_include_letters();
   void process_yellow_letters();
   void process_green_letters();
-
-  /**
-   * @brief   Give the next guess
-   * @return  The guess
-   */
-  std::string make_guess();
 };
 
 #endif // WORDLE_SOLVER_INCLUDE_WORDLE_SOLVER_HPP_
