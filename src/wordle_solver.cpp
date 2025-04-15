@@ -30,6 +30,12 @@ void WordleSolver::solve() {
 void WordleSolver::accept_feedback() { std::getline(std::cin, _feedback); }
 
 void WordleSolver::update_guess_list() {
+  // the pruning methods may not remove the last guess if there are duplicate
+  // letters in the guess, eg "nanny"
+  _guess_list.erase(
+      std::remove(_guess_list.begin(), _guess_list.end(), _last_guess),
+      _guess_list.end());
+
   update_internals();
   prune_guess_list();
 }
