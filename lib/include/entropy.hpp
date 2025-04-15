@@ -20,8 +20,8 @@ class Entropy {
    * @note    The solver first generates a map of feedback for a word, then
    *          passes that map to this function to get the entropy for that word
    */
-  static double
-  entropy(const std::unordered_map<std::bitset<10>, double> &feedback) {
+  template <typename T>
+  static double entropy(const std::unordered_map<T, double> &feedback) {
     double neg_entropy{};
     double sum{};
     for (const auto &[res, freq] : feedback) {

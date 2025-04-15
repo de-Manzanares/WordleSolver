@@ -209,9 +209,9 @@ std::string WordleSolver::guess() {
     for (const auto &word0 : *select_list()) {
       std::unordered_map<std::bitset<10>, double> feedback;
       for (const auto &word1 : _guess_list) {
-        ++feedback[Feedback::feedback_word(word0, word1)];
+        ++feedback[Feedback::feedback_word_bitset(word0, word1)];
       }
-      double score = Entropy::entropy(feedback);
+      double score = Entropy::entropy<decltype(feedback)::key_type>(feedback);
       _entropies.emplace_back(score, word0);
     }
 
