@@ -1,6 +1,9 @@
 #ifndef WORDLE_SOLVER_INCLUDE_FEEDBACK_HPP_
 #define WORDLE_SOLVER_INCLUDE_FEEDBACK_HPP_
 
+#include <bitset>
+#include <algorithm>
+
 class Feedback {
  public:
   /**

@@ -29,6 +29,14 @@ class WordleSolver {
    */
   void solve();
 
+  /**
+   * @brief   Apparently, huge static variables cause compilation to eat ALL THE
+   *          RAM. So, text files it is.
+   * @param   file_name The word list to load
+   * @return  The words in the list
+   */
+  static std::vector<std::string> load_wl(std::string_view file_name);
+
  private:
   /// all valid guesses, loaded from text file
   std::vector<std::string> _all_words;
@@ -61,14 +69,6 @@ class WordleSolver {
 
   /// the words we've narrowed it down to so far
   std::vector<std::string> _guess_list{};
-
-  /**
-   * @brief   Apparently, huge static variables cause compilation to eat ALL THE
-   *          RAM. So, text files it is.
-   * @param   file_name The word list to load
-   * @return  The words in the list
-   */
-  static std::vector<std::string> load_wl(std::string_view file_name);
 
   /**
    * @brief   Read feedback into _feedback from std::cin

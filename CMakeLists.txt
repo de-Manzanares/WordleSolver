@@ -31,20 +31,6 @@ target_link_options(
         $<$<CONFIG:Sanitizer>:$<$<CXX_COMPILER_ID:GNU,Clang>:${SANLinkerOptions}>>
 )
 
-add_executable(wordle_solver)
-target_sources(
-        wordle_solver
-        PRIVATE
-        src/main.cpp
-        src/wordle_solver.cpp
-)
-target_include_directories(
-        wordle_solver
-        PRIVATE
-        include
-)
-target_link_libraries(
-        wordle_solver
-        PRIVATE
-        common-options
-)
+add_subdirectory(lib)
+add_subdirectory(test)
+add_subdirectory(app)
