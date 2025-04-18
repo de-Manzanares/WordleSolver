@@ -3,7 +3,7 @@ add_executable(wordle-solver)
 target_sources(
         wordle-solver
         PRIVATE
-        cli/main.cpp
+        cli/cli.cpp
 )
 target_link_libraries(
         wordle-solver

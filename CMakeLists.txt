@@ -31,6 +31,6 @@ target_link_options(
         $<$<CONFIG:Sanitizer>:$<$<CXX_COMPILER_ID:GNU,Clang>:${SANLinkerOptions}>>
 )
 
-add_subdirectory(lib)
+add_subdirectory(solver)
 add_subdirectory(test)
-add_subdirectory(app)
+add_subdirectory(ui)
