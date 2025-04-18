@@ -8,24 +8,23 @@
 #include <unordered_map>
 
 std::vector<std::string>
-WordleSolver::load_wl(const std::string_view file_name) {
-  std::vector<std::string> wl;
+WordleSolver::load_wordlist(const std::string_view file_name) {
+  std::vector<std::string> wordlist;
   if (!std::filesystem::exists(file_name)) {
     std::cerr << "Cannot find file '" << file_name << "' in search path:\n"
               << std::filesystem::current_path();
     std::exit(EXIT_FAILURE);
   }
-  if (std::ifstream iFile((file_name.data())); iFile.is_open()) {
+  if (std::ifstream in_file((file_name.data())); in_file.is_open()) {
     std::string line;
-    while (std::getline(iFile, line)) {
-      wl.push_back(line);
+    while (std::getline(in_file, line)) {
+      wordlist.push_back(line);
     }
   } else {
-    std::cerr << "Failed to open file " << file_name << std::endl;
+    std::cerr << "Failed to open file " << file_name << '\n';
     std::exit(EXIT_FAILURE);
   }
-
-  return wl;
+  return wordlist;
 }
 
 void WordleSolver::accept_feedback(const std::string &feedback) {
@@ -35,7 +34,7 @@ void WordleSolver::accept_feedback(const std::string &feedback) {
 
 void WordleSolver::update_guess_list() {
   // the pruning methods may not remove the last guess if there are duplicate
-  // letters in the guess, eg "nanny"
+  // letters in the guess, e.g. "nanny"
   _guess_list.erase(
       std::remove(_guess_list.begin(), _guess_list.end(), _last_guess),
       _guess_list.end());
@@ -55,7 +54,7 @@ void WordleSolver::update_internals() {
 }
 
 void WordleSolver::interpret_feedback() {
-  for (int i = 0; i < 5; ++i) {
+  for (int i = 0; i < WORD_SIZE; ++i) {
     switch (_feedback[i]) {
     case 'x':
       _exclude_letters.push_back(_last_guess[i]);
@@ -75,9 +74,9 @@ void WordleSolver::interpret_feedback() {
   }
 }
 
-void WordleSolver::sort_remove_duplicates(std::vector<char> *v) {
-  std::sort(v->begin(), v->end());
-  v->erase(std::unique(v->begin(), v->end()), v->end());
+void WordleSolver::sort_remove_duplicates(std::vector<char> *vec) {
+  std::sort(vec->begin(), vec->end());
+  vec->erase(std::unique(vec->begin(), vec->end()), vec->end());
 }
 
 void WordleSolver::prune_guess_list() {
@@ -88,28 +87,10 @@ void WordleSolver::prune_guess_list() {
 }
 
 void WordleSolver::process_exclude_letters() {
-  _exclude_letters.erase(
-      std::remove_if(_exclude_letters.begin(), _exclude_letters.end(),
-                     [&](const auto ch_ex) {
-                       return std::find(_include_letters.begin(),
-                                        _include_letters.end(),
-                                        ch_ex) != _include_letters.end();
-                     }),
-      _exclude_letters.end());
+  prefer_include_over_exclude();
 
   if (_iteration == 1) {
-    for (const auto &word : _all_solutions) {
-      bool found{false};
-      for (const auto letter : _exclude_letters) {
-        if (word.find(letter) != std::string::npos) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        _guess_list.push_back(word);
-      }
-    }
+    process_first_exclude_letters();
   } else {
     for (auto word = _guess_list.begin(); word != _guess_list.end();) {
       bool found{false};
@@ -124,6 +105,32 @@ void WordleSolver::process_exclude_letters() {
       } else {
         ++word;
       }
+    }
+  }
+}
+
+void WordleSolver::prefer_include_over_exclude() {
+  _exclude_letters.erase(
+      std::remove_if(_exclude_letters.begin(), _exclude_letters.end(),
+                     [&](const auto ch_ex) {
+                       return std::find(_include_letters.begin(),
+                                        _include_letters.end(),
+                                        ch_ex) != _include_letters.end();
+                     }),
+      _exclude_letters.end());
+}
+
+void WordleSolver::process_first_exclude_letters() {
+  for (const auto &word : _all_solutions) {
+    bool found{false};
+    for (const auto letter : _exclude_letters) {
+      if (word.find(letter) != std::string::npos) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      _guess_list.push_back(word);
     }
   }
 }
@@ -197,21 +204,21 @@ std::string WordleSolver::guess() {
     _entropies.reserve(_guess_list.size());
 
     auto select_list = [&]() -> const std::vector<std::string> * {
-      if (_iteration == 0 && _guess_list.size() > 5) {
+      if (_iteration == 0 && _guess_list.size() > WORD_SIZE) {
         return &_all_words;
       }
-      if (_guess_list.size() <= 5) {
+      if (_guess_list.size() <= WORD_SIZE) {
         return &_guess_list;
       }
       return &_all_solutions;
     };
 
     for (const auto &word0 : *select_list()) {
-      std::unordered_map<std::bitset<10>, double> feedback;
+      std::unordered_map<Feedback::Code, double> feedback_to_freq;
       for (const auto &word1 : _guess_list) {
-        ++feedback[Feedback::feedback_word_bitset(word0, word1)];
+        ++feedback_to_freq[Feedback::feedback(word0, word1)];
       }
-      double score = Entropy::entropy<decltype(feedback)::key_type>(feedback);
+      double score = Entropy::entropy(feedback_to_freq);
       _entropies.emplace_back(score, word0);
     }
 

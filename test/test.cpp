@@ -7,7 +7,7 @@
 
 int main() {
   const std::vector<std::string> solutions =
-      WordleSolver::load_wl("all_solutions.txt");
+      WordleSolver::load_wordlist("all_solutions.txt");
 
   constexpr std::size_t unsolved{0};
   const std::string solved{"ggggg"};
@@ -27,7 +27,7 @@ int main() {
 
     for (int i = 1; i <= 10; ++i) {
       guess = solver.guess();
-      feedback = Feedback::feedback_word_string(guess, solution);
+      feedback = Feedback::feedback_string(guess, solution);
       if (feedback == solved) {
         ++guesses[i];
         break;

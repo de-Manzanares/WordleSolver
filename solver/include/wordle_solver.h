@@ -19,10 +19,10 @@ class WordleSolver {
    *        possible solutions to the puzzle
    */
   WordleSolver()
-      : _all_words{load_wl("all_words.txt")},
-        _all_solutions{load_wl("all_solutions.txt")},
-        _letters_go_here{std::vector(5, '0')},
-        _letters_dont_go_here{std::vector(5, '0')} {}
+      : _all_words{load_wordlist("all_words.txt")},
+        _all_solutions{load_wordlist("all_solutions.txt")},
+        _letters_go_here{std::vector(WORD_SIZE, '0')},
+        _letters_dont_go_here{std::vector(WORD_SIZE, '0')} {}
 
   /**
    * @brief   Give the next guess
@@ -32,7 +32,7 @@ class WordleSolver {
 
   /**
    * @brief   Read feedback into _feedback from std::cin
-   * @details 'x' - grey \n
+   * @details 'x' - gray \n
    *          'y' - yellow \n
    *          'g' - green
    */
@@ -44,36 +44,36 @@ class WordleSolver {
    * @param   file_name The word list to load
    * @return  The words in the list
    */
-  static std::vector<std::string> load_wl(std::string_view file_name);
+  static std::vector<std::string> load_wordlist(std::string_view file_name);
+
+  static constexpr int WORD_SIZE = 5;
 
  private:
   /// all valid guesses, loaded from text file
   std::vector<std::string> _all_words;
-  /// all possible solutions, loaded from text file
+  /// all possible solutions, loaded from a text file
   std::vector<std::string> _all_solutions;
 
-  /// word entropies, ie the expected information
-  std::vector<std::pair<double, std::string>> _entropies{};
+  /// word entropies, i.e., the expected information
+  std::vector<std::pair<double, std::string>> _entropies;
 
   /// used by other methods for refining the next guess
   std::string _last_guess = "tarse";
-  std::string _feedback;   ///< feedback from last guess (eg "xxygx")
-  std::stringstream _ss{}; ///< for user input processing
-  std::string _input{};    ///< for user input processing
-  int _iteration{};        ///< used for some control flows
+  std::string _feedback; ///< feedback from last guess (eg "xxygx")
+  int _iteration{};      ///< used for some control flows
 
-  std::vector<char> _include_letters{}; ///< solution must have
-  std::vector<char> _exclude_letters{}; ///< solution must not have
+  std::vector<char> _include_letters; ///< solution must have
+  std::vector<char> _exclude_letters; ///< solution must not have
 
   std::vector<char> _letters_go_here; ///< solution has these letters here
-  std::vector<int> _pos_positions{};  ///< helper for correctly placed letters
+  std::vector<int> _pos_positions;    ///< helper for correctly placed letters
 
   /// solution must not have these letters here
   std::vector<char> _letters_dont_go_here;
-  std::vector<int> _neg_positions{}; ///< helper for incorrectly placed letters
+  std::vector<int> _neg_positions; ///< helper for incorrectly placed letters
 
   /// the words we've narrowed it down to so far
-  std::vector<std::string> _guess_list{};
+  std::vector<std::string> _guess_list;
 
   /**
    * @brief   Based on the feedback, update the lists of possible solutions
@@ -93,8 +93,10 @@ class WordleSolver {
   void prune_guess_list();
 
   void interpret_feedback();
-  static void sort_remove_duplicates(std::vector<char> *v);
+  static void sort_remove_duplicates(std::vector<char> *vec);
   void process_exclude_letters();
+  void prefer_include_over_exclude();
+  void process_first_exclude_letters();
   void process_include_letters();
   void process_yellow_letters();
   void process_green_letters();
