@@ -221,45 +221,50 @@ const std::vector<std::string> *WordleSolver::select_wordlist() const {
   return &_all_solutions;
 }
 
-std::string WordleSolver::eval_entropies() {
-  _entropies.clear();
-  _entropies.reserve(_guess_list.size());
-
-  const auto *const wordlist = select_wordlist();
+std::string WordleSolver::eval_entropies() const {
   std::string best_word{};
+  const auto *const wordlist = select_wordlist();
 
-  if (wordlist->size() > 999 && std::thread::hardware_concurrency() >= 3) {
-    const std::ptrdiff_t chunk_size =
-        static_cast<std::ptrdiff_t>(wordlist->size()) / 3;
+  if (constexpr auto cutoff{999}; wordlist->size() > cutoff) {
+    const auto thread_count = std::max(1U, std::thread::hardware_concurrency());
+    const auto chunk_size =
+        static_cast<std::ptrdiff_t>(wordlist->size() / thread_count);
 
-    std::vector<std::vector<std::string>::const_iterator> chunks;
+    std::vector<std::vector<std::string>::const_iterator> ranges;
+    ranges.reserve(thread_count + 1);
 
-    for (int i = 1; i < 3; ++i) {
-      chunks.push_back(std::next(wordlist->begin(), chunk_size * i));
+    for (unsigned i = 0; i < thread_count; ++i) {
+      ranges.emplace_back(std::next(wordlist->cbegin(), i * chunk_size));
+    }
+    ranges.emplace_back(wordlist->cend());
+
+    std::vector<std::future<std::pair<double, std::string>>> futures;
+    futures.reserve(thread_count);
+
+    for (unsigned i = 0; i < thread_count; ++i) {
+      futures.emplace_back(std::async(std::launch::async, [this, &ranges, i] {
+        return get_best_word(ranges[i], ranges[i + 1]);
+      }));
     }
 
-    auto future0 = std::async(std::launch::async, [this, wordlist, chunks] {
-      return get_best_word(wordlist->begin(), chunks[0]);
-    });
-    auto future1 = std::async(std::launch::async, [this, chunks] {
-      return get_best_word(chunks[0], chunks[1]);
-    });
-    auto future2 = std::async(std::launch::async, [this, wordlist, chunks] {
-      return get_best_word(chunks[1], wordlist->end());
-    });
+    std::vector<std::pair<double, std::string>> best_words;
+    best_words.reserve(futures.size());
 
-    std::vector pairs{future0.get(), future1.get(), future2.get()};
+    for (auto &future : futures) {
+      best_words.emplace_back(future.get());
+    }
+
     auto [max_score, max_word] =
         std::make_pair(std::numeric_limits<double>::min(), std::string{});
 
-    for (const auto &[score, word] : pairs) {
+    for (const auto &[score, word] : best_words) {
       if (score > max_score) {
         max_score = score;
         best_word = word;
       }
     }
   } else {
-    best_word = get_best_word(wordlist->begin(), wordlist->end()).second;
+    best_word = get_best_word(wordlist->cbegin(), wordlist->cend()).second;
   }
   return best_word;
 }

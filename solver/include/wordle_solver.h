@@ -100,7 +100,8 @@ class WordleSolver {
   void process_include_letters();
   void process_yellow_letters();
   void process_green_letters();
-  std::string eval_entropies();
+
+  [[nodiscard]] auto eval_entropies() const -> std::string;
 
   [[nodiscard]] auto select_wordlist() const
       -> const std::vector<std::string> *;
