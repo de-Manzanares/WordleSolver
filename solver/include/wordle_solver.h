@@ -100,6 +100,15 @@ class WordleSolver {
   void process_include_letters();
   void process_yellow_letters();
   void process_green_letters();
+  std::string eval_entropies();
+
+  [[nodiscard]] auto select_wordlist() const
+      -> const std::vector<std::string> *;
+
+  [[nodiscard]] auto
+  get_best_word(std::vector<std::string>::const_iterator first,
+                std::vector<std::string>::const_iterator last) const
+      -> std::pair<double, std::string>;
 };
 
 #endif // WORDLE_SOLVER_INCLUDE_WORDLE_SOLVER_HPP_

@@ -4,7 +4,9 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <future>
 #include <iostream>
+#include <thread>
 #include <unordered_map>
 
 std::vector<std::string>
@@ -200,32 +202,93 @@ std::string WordleSolver::guess() {
                 << "\t- Incorrect user input\n";
       std::exit(EXIT_FAILURE);
     }
-    _entropies.clear();
-    _entropies.reserve(_guess_list.size());
-
-    auto select_list = [&]() -> const std::vector<std::string> * {
-      if (_iteration == 0 && _guess_list.size() > WORD_SIZE) {
-        return &_all_words;
-      }
-      if (_guess_list.size() <= WORD_SIZE) {
-        return &_guess_list;
-      }
-      return &_all_solutions;
-    };
-
-    for (const auto &word0 : *select_list()) {
-      std::unordered_map<Feedback::Code, double> feedback_to_freq;
-      for (const auto &word1 : _guess_list) {
-        ++feedback_to_freq[Feedback::feedback(word0, word1)];
-      }
-      double score = Entropy::entropy(feedback_to_freq);
-      _entropies.emplace_back(score, word0);
-    }
-
-    std::sort(_entropies.begin(), _entropies.end(), std::less{});
-    _last_guess = _entropies.back().second;
+    _last_guess = eval_entropies();
     guess = _last_guess;
   }
   ++_iteration;
   return guess;
+}
+
+const std::vector<std::string> *WordleSolver::select_wordlist() const {
+  static constexpr int cutoff{5};
+
+  if (_iteration == 0 && _guess_list.size() > cutoff) {
+    return &_all_words;
+  }
+  if (_guess_list.size() <= cutoff) {
+    return &_guess_list;
+  }
+  return &_all_solutions;
+}
+
+std::string WordleSolver::eval_entropies() {
+  _entropies.clear();
+  _entropies.reserve(_guess_list.size());
+
+  const auto *const wordlist = select_wordlist();
+  std::string best_word{};
+
+  if (wordlist->size() > 999 && std::thread::hardware_concurrency() >= 3) {
+    const std::ptrdiff_t chunk_size =
+        static_cast<std::ptrdiff_t>(wordlist->size()) / 3;
+
+    std::vector<std::vector<std::string>::const_iterator> chunks;
+
+    for (int i = 1; i < 3; ++i) {
+      chunks.push_back(std::next(wordlist->begin(), chunk_size * i));
+    }
+
+    auto future0 = std::async(std::launch::async, [this, wordlist, chunks] {
+      return get_best_word(wordlist->begin(), chunks[0]);
+    });
+    auto future1 = std::async(std::launch::async, [this, chunks] {
+      return get_best_word(chunks[0], chunks[1]);
+    });
+    auto future2 = std::async(std::launch::async, [this, wordlist, chunks] {
+      return get_best_word(chunks[1], wordlist->end());
+    });
+
+    std::vector pairs{future0.get(), future1.get(), future2.get()};
+    auto [max_score, max_word] =
+        std::make_pair(std::numeric_limits<double>::min(), std::string{});
+
+    for (const auto &[score, word] : pairs) {
+      if (score > max_score) {
+        max_score = score;
+        best_word = word;
+      }
+    }
+  } else {
+    best_word = get_best_word(wordlist->begin(), wordlist->end()).second;
+  }
+  return best_word;
+}
+
+std::pair<double, std::string> WordleSolver::get_best_word(
+    const std::vector<std::string>::const_iterator first,
+    const std::vector<std::string>::const_iterator last) const {
+
+  std::vector<std::pair<double, std::string>> entropies;
+  entropies.reserve(std::distance(first, last));
+
+  for (auto it = first; it != last; ++it) {
+    std::unordered_map<Feedback::Code, double> feedback_to_freq;
+
+    for (const auto &word : _guess_list) {
+      ++feedback_to_freq[Feedback::feedback(*it, word)];
+    }
+    double score = Entropy::entropy(feedback_to_freq);
+    entropies.emplace_back(score, *it);
+  }
+
+  auto [max_score, max_word] =
+      std::make_pair(std::numeric_limits<double>::min(), std::string{});
+
+  for (const auto &[score, word] : entropies) {
+    if (score > max_score) {
+      max_score = score;
+      max_word = word;
+    }
+  }
+  return {max_score, max_word};
 }
