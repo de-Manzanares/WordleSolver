@@ -1854,6 +1854,7 @@ spank
 spare
 spark
 spasm
+spate
 spawn
 speak
 spear
