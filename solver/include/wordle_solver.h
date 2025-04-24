@@ -18,17 +18,13 @@ class WordleSolver {
    *        "all_solutions.txt" is the smaller list of words that are
    *        possible solutions to the puzzle
    */
-  WordleSolver()
-      : _all_words{load_wordlist("all_words.txt")},
-        _all_solutions{load_wordlist("all_solutions.txt")},
-        _letters_go_here{std::vector(WORD_SIZE, '0')},
-        _letters_dont_go_here{std::vector(WORD_SIZE, '0')} {}
+  WordleSolver();
 
   /**
    * @brief   Give the next guess
    * @return  The guess
    */
-  std::string guess();
+  [[nodiscard]] auto guess() -> std::string;
 
   /**
    * @brief   Read feedback into _feedback from std::cin
@@ -44,37 +40,16 @@ class WordleSolver {
    * @param   file_name The word list to load
    * @return  The words in the list
    */
-  static std::vector<std::string> load_wordlist(std::string_view file_name);
+  [[nodiscard]] static auto load_wordlist(std::string_view file_name)
+      -> std::vector<std::string>;
+
+  [[nodiscard]] static auto load_wordlist(const char *characters,
+                                          unsigned int length)
+      -> std::vector<std::string>;
 
   static constexpr int WORD_SIZE = 5;
 
  private:
-  /// all valid guesses, loaded from text file
-  std::vector<std::string> _all_words;
-  /// all possible solutions, loaded from a text file
-  std::vector<std::string> _all_solutions;
-
-  /// word entropies, i.e., the expected information
-  std::vector<std::pair<double, std::string>> _entropies;
-
-  /// used by other methods for refining the next guess
-  std::string _last_guess = "tarse";
-  std::string _feedback; ///< feedback from last guess (eg "xxygx")
-  int _iteration{};      ///< used for some control flows
-
-  std::vector<char> _include_letters; ///< solution must have
-  std::vector<char> _exclude_letters; ///< solution must not have
-
-  std::vector<char> _letters_go_here; ///< solution has these letters here
-  std::vector<int> _pos_positions;    ///< helper for correctly placed letters
-
-  /// solution must not have these letters here
-  std::vector<char> _letters_dont_go_here;
-  std::vector<int> _neg_positions; ///< helper for incorrectly placed letters
-
-  /// the words we've narrowed it down to so far
-  std::vector<std::string> _guess_list;
-
   /**
    * @brief   Based on the feedback, update the lists of possible solutions
    * @details Calls WordleSolver::update_internals() and
@@ -110,6 +85,32 @@ class WordleSolver {
   get_best_word(std::vector<std::string>::const_iterator first,
                 std::vector<std::string>::const_iterator last) const
       -> std::pair<double, std::string>;
+
+  /// all valid guesses, loaded from text file
+  std::vector<std::string> _all_words;
+  /// all possible solutions, loaded from a text file
+  std::vector<std::string> _all_solutions;
+
+  /// word entropies, i.e., the expected information
+  std::vector<std::pair<double, std::string>> _entropies;
+
+  /// used by other methods for refining the next guess
+  std::string _last_guess = "tarse";
+  std::string _feedback; ///< feedback from last guess (eg "xxygx")
+  int _iteration{};      ///< used for some control flows
+
+  std::vector<char> _include_letters; ///< solution must have
+  std::vector<char> _exclude_letters; ///< solution must not have
+
+  std::vector<char> _letters_go_here; ///< solution has these letters here
+  std::vector<int> _pos_positions;    ///< helper for correctly placed letters
+
+  /// solution must not have these letters here
+  std::vector<char> _letters_dont_go_here;
+  std::vector<int> _neg_positions; ///< helper for incorrectly placed letters
+
+  /// the words we've narrowed it down to so far
+  std::vector<std::string> _guess_list;
 };
 
 #endif // WORDLE_SOLVER_INCLUDE_WORDLE_SOLVER_HPP_
