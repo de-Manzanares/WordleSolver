@@ -43,8 +43,8 @@ class WordleSolver {
   [[nodiscard]] static auto load_wordlist(std::string_view file_name)
       -> std::vector<std::string>;
 
-  template <std::size_t N>
-  static auto load_wordlist(const std::array<unsigned char, N> &array)
+  [[nodiscard]] static auto load_wordlist(const char *characters,
+                                          unsigned int length)
       -> std::vector<std::string>;
 
   static constexpr int WORD_SIZE = 5;

@@ -1,9 +1,10 @@
 #ifndef WORDLE_SOLVER_INCLUDE_DATA_H_
 #define WORDLE_SOLVER_INCLUDE_DATA_H_
 
-#include <array>
+extern const char ALL_WORDS_TXT[];
+extern const unsigned int ALL_WORDS_TXT_LEN;
 
-extern const std::array<unsigned char, 89130> ALL_WORDS_TXT;
-extern const std::array<unsigned char, 13920> ALL_SOLUTIONS_TXT;
+extern const char ALL_SOLUTIONS_TXT[];
+extern const unsigned int ALL_SOLUTIONS_TXT_LEN;
 
 #endif // WORDLE_SOLVER_INCLUDE_DATA_H_
