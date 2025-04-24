@@ -1,0 +1,4 @@
+/.idea
+/cmake-build-*
+/solver/include/data.h
+/solver/src/data.cpp
