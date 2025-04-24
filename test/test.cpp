@@ -1,3 +1,4 @@
+#include "data.h"
 #include "feedback.hpp"
 #include "wordle_solver.h"
 
@@ -7,7 +8,7 @@
 
 int main() {
   const std::vector<std::string> solutions =
-      WordleSolver::load_wordlist("all_solutions.txt");
+      WordleSolver::load_wordlist(ALL_SOLUTIONS_TXT);
 
   constexpr std::size_t unsolved{0};
   const std::string solved{"ggggg"};

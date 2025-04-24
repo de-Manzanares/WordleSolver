@@ -12,9 +12,8 @@
 #include <unordered_map>
 
 WordleSolver::WordleSolver()
-    : _all_words{load_wordlist(&ALL_WORDS_TXT[0], ALL_SOLUTIONS_TXT_LEN)},
-      _all_solutions{
-          load_wordlist(&ALL_SOLUTIONS_TXT[0], ALL_SOLUTIONS_TXT_LEN)},
+    : _all_words{load_wordlist(ALL_WORDS_TXT)},
+      _all_solutions{load_wordlist(ALL_SOLUTIONS_TXT)},
       _letters_go_here{std::vector(WORD_SIZE, '0')},
       _letters_dont_go_here{std::vector(WORD_SIZE, '0')} {}
 
@@ -38,17 +37,17 @@ WordleSolver::load_wordlist(const std::string_view file_name) {
   return wordlist;
 }
 
-std::vector<std::string>
-WordleSolver::load_wordlist(const char *characters,
-                            const unsigned int length) {
+template <std::size_t N>
+auto WordleSolver::load_wordlist(const std::array<unsigned char, N> &array)
+    -> std::vector<std::string> {
   std::vector<std::string> wordlist;
-  wordlist.reserve(length / (WORD_SIZE + 1));
+  wordlist.reserve(N / (WORD_SIZE + 1));
   std::string word;
 
-  for (unsigned int i = 0; i < length; ++i) {
-    if (*std::next(characters, i) != '\n') {
-      word += *std::next(characters, i);
-    } else if (*std::next(characters, i) == '\n') {
+  for (std::size_t i = 0; i < N; ++i) {
+    if (array[i] != '\n') {
+      word += array[i];
+    } else if (array[i] == '\n') {
       wordlist.push_back(word);
       word.clear();
     }
