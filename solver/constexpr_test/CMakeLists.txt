@@ -1,0 +1,18 @@
+add_executable(constexprtest)
+target_sources(
+        constexprtest
+        PRIVATE
+        main.cpp
+        Words.cpp
+)
+target_include_directories(
+        constexprtest
+        PRIVATE
+        ../include
+)
+target_link_libraries(
+        constexprtest
+        PRIVATE
+        wordle_solver::lib
+        common-options
+)

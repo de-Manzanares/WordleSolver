@@ -34,3 +34,4 @@ target_link_options(
 add_subdirectory(solver)
 add_subdirectory(test)
 add_subdirectory(ui)
+add_subdirectory(solver/constexpr_test)
