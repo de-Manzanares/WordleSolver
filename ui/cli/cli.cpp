@@ -4,8 +4,8 @@
 int main() {
   WordleSolver ws;
   for (int i = 0; i < 6; ++i) {
-    std::string line;
     std::cout << ws.guess() << ' ';
+    std::string line;
     std::getline(std::cin, line);
     ws.accept_feedback(line);
   }
