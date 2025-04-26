@@ -52,11 +52,16 @@ int main() {
   double average{};
 
   for (const auto &[score, freq] : guesses) {
-    std::cout << score << ' ' << freq << '\n';
+    std::cout << score << ' ' << freq;
+    if (score == 0) {
+      std::cout << " <- unsolved puzzles\n";
+    } else {
+      std::cout << '\n';
+    }
     average += static_cast<double>(score) * static_cast<double>(freq) /
                static_cast<double>(solutions.size());
   }
   std::cout << '\n';
-  std::cout << "Average time to solve: " << average << " guesses\n";
+  std::cout << "Average guesses-to-solve: " << average << '\n';
   std::cout << "Test duration: " << duration.count() << " ms\n";
 }
