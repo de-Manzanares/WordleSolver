@@ -1,6 +1,6 @@
 # WordleSolver
 
-A small C++ interface for solving
+A small C++ library for solving
 [Wordle puzzles](https://www.nytimes.com/games/wordle/index.html)
 using
 [Shannon entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)).
@@ -112,7 +112,7 @@ target_link_libraries(
 )
 ```
 
-Then, in whichever files you'd like to use the `WordleSolver` interface:
+Then, in whichever files you'd like to use `WordleSolver`:
 
 ```c++
 #include <wordle_solver.h>

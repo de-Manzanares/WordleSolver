@@ -4,7 +4,7 @@
 
 - Multithreading
     - To improve responsiveness, the solver will distribute the entropy calculations to as many cores as are available.
-    
+
 ### Changed
 
 - Rename project and CMake target for consistency
@@ -12,8 +12,7 @@
 
 ## 0.2.0
 
-- Transition to building the solver as a C++ interface rather than an
-  end-to-end application.
+- Transition to building the solver as a library rather than an end-to-end application.
 
 ### Added
 
