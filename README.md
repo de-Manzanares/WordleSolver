@@ -21,7 +21,7 @@ don't worry, it works just fine)
 
 ## How to use it
 
-Example code for a CLI Wordle solving application:
+Example code for a CLI Wordle-solving application:
 
 ```c++
 #include <iostream>
@@ -66,8 +66,8 @@ For example:
 
 Currently, the files in [/data](./data) need to be copied into the working
 directory of any executable that uses `WordleSolver`.
-There are plans to embed the data at compile time so that the aforementioned
-restriction is no longer an issue.
+There are plans to embed the data into the library at compile time so that the
+aforementioned restriction is no longer an issue.
 
 ## Performance
 
@@ -90,7 +90,7 @@ Test duration: 3912 ms
 ```
 
 Evaluating the entropy of a word &mdash; let alone thousands of words &mdash; is computationally expensive.
-To reduce latency, the solver will spread the entropy calculations across as many cores as are available.
+To improve responsiveness, the solver will distribute the entropy calculations to as many cores as are available.
 
 ## Integration
 
@@ -101,14 +101,14 @@ include(FetchContent)
 FetchContent_Declare(
         WordleSolver
         GIT_REPOSITORY https://github.com/de-Manzanares/WordleSolver.git
-        GIT_TAG v0.2.0
+        GIT_TAG v0.3.0
 )
 FetchContent_MakeAvailable(WordleSolver)
 
 target_link_libraries(
         <YOUR-TARGET>
         PRIVATE
-        wordle_solver::lib
+        WordleSolver::WordleSolver
 )
 ```
 
@@ -119,7 +119,7 @@ Then, in whichever files you'd like to use the `WordleSolver` interface:
 ```
 
 CMake will build
-`wordle_solver::lib`
+`WordleSolver::WordleSolver`
 as a static library and link your target against it.
 It will also add `wordle_solver.h` to your target's include paths.
 

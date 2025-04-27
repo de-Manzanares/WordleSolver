@@ -9,5 +9,5 @@ target_link_libraries(
         test
         PRIVATE
         common-options
-        wordle_solver::lib
+        WordleSolver::WordleSolver
 )

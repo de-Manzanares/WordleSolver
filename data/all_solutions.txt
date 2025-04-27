@@ -533,6 +533,7 @@ decor
 decoy
 decry
 defer
+deify
 deign
 deity
 delay
