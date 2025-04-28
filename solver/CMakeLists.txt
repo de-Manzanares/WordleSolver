@@ -1,11 +1,11 @@
-add_library(_WordleSolver STATIC)
+add_library(_WordleSolver)
 
 add_library(WordleSolver::WordleSolver ALIAS _WordleSolver)
 
 target_sources(
         _WordleSolver
         PRIVATE
-        src/data.cpp
+        # src/data.cpp
         src/wordle_solver.cpp
 )
 target_include_directories(

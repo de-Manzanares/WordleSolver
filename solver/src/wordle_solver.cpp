@@ -1,6 +1,6 @@
 #include "wordle_solver.h"
 
-#include "data.h"
+// #include "data.h"
 #include "entropy.hpp"
 #include "feedback.hpp"
 

@@ -101,7 +101,7 @@ include(FetchContent)
 FetchContent_Declare(
         WordleSolver
         GIT_REPOSITORY https://github.com/de-Manzanares/WordleSolver.git
-        GIT_TAG v0.3.0
+        GIT_TAG v0.3.1
 )
 FetchContent_MakeAvailable(WordleSolver)
 
