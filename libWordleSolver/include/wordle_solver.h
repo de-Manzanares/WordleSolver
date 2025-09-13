@@ -47,7 +47,7 @@ class WordleSolver {
                                           unsigned int length)
       -> std::vector<std::string>;
 
-  static constexpr int WORD_SIZE = 5;
+  static constexpr int word_len = 5;
 
  private:
   /**
