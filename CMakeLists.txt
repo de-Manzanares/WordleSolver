@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.23)
 
 project(WordleSolver VERSION 0.3.1 LANGUAGES CXX)
+
+enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -10,6 +12,7 @@ set(COVCompilerOptions --coverage ${CompilerOptions})
 set(COVLinkerOptions --coverage)
 set(SANCompilerOptions -fsanitize=address,undefined ${CompilerOptions})
 set(SANLinkerOptions -fsanitize=address,undefined)
+set(ReleaseCompilerOptions -O3 -ffast-math)
 
 add_library(
         common-options
@@ -21,7 +24,7 @@ target_compile_options(
         $<$<CONFIG:Debug>:$<$<CXX_COMPILER_ID:GNU,Clang>:${DEBUGCompilerOptions}>>
         $<$<CONFIG:Coverage>:$<$<CXX_COMPILER_ID:GNU,Clang>:${COVCompilerOptions}>>
         $<$<CONFIG:Sanitizer>:$<$<CXX_COMPILER_ID:GNU,Clang>:${SANCompilerOptions}>>
-        $<$<CONFIG:Release>:$<$<CXX_COMPILER_ID:GNU,Clang>:-O3>>
+        $<$<CONFIG:Release>:$<$<CXX_COMPILER_ID:GNU,Clang>:${ReleaseCompilerOptions}>>
         $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 target_link_options(
@@ -31,6 +34,6 @@ target_link_options(
         $<$<CONFIG:Sanitizer>:$<$<CXX_COMPILER_ID:GNU,Clang>:${SANLinkerOptions}>>
 )
 
-add_subdirectory(solver)
+add_subdirectory(wordle-solver)
+add_subdirectory(libWordleSolver)
 add_subdirectory(test)
-add_subdirectory(ui)
