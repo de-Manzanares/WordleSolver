@@ -1,13 +1,15 @@
-add_executable(test-solver)
+add_executable(wordle-solver-test)
+
 target_sources(
-        test-solver
+        wordle-solver-test
         PRIVATE
-        test_solver.cpp
+        wordle_solver_test.cpp
 )
 target_link_libraries(
-        test-solver
+        wordle-solver-test
         PRIVATE
         common-options
         WordleSolver::WordleSolver
 )
-add_test(NAME TestSolver COMMAND test-solver)
+
+add_test(NAME WordleSolverTest COMMAND wordle-solver-test)
