@@ -1,4 +1,3 @@
-/.idea
+/build
 /cmake-build-*
-/solver/include/data.h
-/solver/src/data.cpp
+/.idea
