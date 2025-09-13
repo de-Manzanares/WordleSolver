@@ -11,5 +11,5 @@ target_link_libraries(
         common-options
         WordleSolver::WordleSolver
 )
-
+add_build_message(wordle-solver-test)
 add_test(NAME WordleSolverTest COMMAND wordle-solver-test)

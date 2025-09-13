@@ -32,15 +32,23 @@ target_link_options(
         $<$<CONFIG:Sanitizer>:$<$<CXX_COMPILER_ID:GNU,Clang>:${SANLinkerOptions}>>
 )
 
+add_custom_target(
+        copy_word_lists ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/word_lists
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/word_lists
+        COMMENT "Copying word_lists to ${CMAKE_BINARY_DIR}/bin"
+        DEPENDS wordle-solver wordle-solver-test
+)
+
+function(add_build_message target_name)
+    add_custom_command(TARGET ${target_name} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E echo
+            "Built ${target_name} at $<TARGET_FILE:${target_name}>"
+    )
+endfunction()
+
 add_subdirectory(wordle-solver)
 add_subdirectory(libWordleSolver)
 enable_testing()
 add_subdirectory(test)
-
-add_custom_target(copy_word_lists ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${PROJECT_SOURCE_DIR}/word_lists
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/word_lists
-        COMMENT "copying word lists to ${CMAKE_BINARY_DIR}/bin"
-        DEPENDS wordle-solver wordle-solver-test
-)

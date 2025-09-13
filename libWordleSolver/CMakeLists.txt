@@ -18,3 +18,4 @@ target_link_libraries(
         PRIVATE
         common-options
 )
+add_build_message(WordleSolver)

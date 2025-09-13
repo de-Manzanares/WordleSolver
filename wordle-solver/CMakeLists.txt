@@ -11,3 +11,4 @@ target_link_libraries(
         common-options
         WordleSolver::WordleSolver
 )
+add_build_message(wordle-solver)
